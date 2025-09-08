@@ -262,7 +262,10 @@ type Server struct {
 	onStopFuncs      []func(context.Context) error // TODO: Experimental (Nov. 2023)
 }
 
-// ServeHTTP is the entry point for all HTTP requests.
+// すべてのHTTPリクエストのエントリーポイントとなるメソッド
+// s: CaddyのHTTPサーバーインスタンスへのポインタ(サーバの設定(ルート・ミドルウェアなど)にアクセスできる)
+// w: HTTPレスポンスをクライアントに送信するためのGoのインターフェース
+// r: クライアントからのHTTPリクエスト情報を含む構造体へのポインタ(URL, メソッド, ヘッダー, ボディ)
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// If there are listener wrappers that process tls connections but don't return a *tls.Conn, this field will be nil.
 	// TODO: Scheduled to be removed later because https://github.com/golang/go/pull/56110 has been merged.
@@ -276,6 +279,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// レスポンスのWebサーバーにCaddyをセットする
 	w.Header().Set("Server", "Caddy")
 
 	// advertise HTTP/3, if enabled
@@ -290,7 +294,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// reject very long methods; probably a mistake or an attack
+	// HTTP Method(GET, POSTなど)の長さが32文字以上だとリジェクト
 	if len(r.Method) > 32 {
 		if s.shouldLogRequest(r) {
 			if c := s.accessLogger.Check(zapcore.DebugLevel, "rejecting request with long method"); c != nil {
@@ -325,6 +329,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// modified during handling
 	// cloning the request and using .WithLazy is considerably faster
 	// than using .With, which will JSON encode the request immediately
+	// ログを出力するための処理(リクエストをコピーしてる)
 	shouldLogCredentials := s.Logs != nil && s.Logs.ShouldLogCredentials
 	loggableReq := zap.Object("request", LoggableHTTPRequest{
 		Request:              r.Clone(r.Context()),
@@ -367,10 +372,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// execute the primary handler chain
+	// ルーティング・ミドルウェア連鎖を実行する→該当ルートにfile_serverがあればstaticfiles.goのServeHTTPが呼ばれる
 	err := s.primaryHandlerChain.ServeHTTP(w, r)
 	duration = time.Since(start)
 
 	// if no errors, we're done!
+	// リクエストにエラーがない時の処理(このメソッドは終了)
 	if err == nil {
 		return
 	}

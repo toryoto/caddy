@@ -448,6 +448,7 @@ func removeTLSALPN(srv *Server, target string) {
 
 // Start runs the app. It finishes automatic HTTPS if enabled,
 // including management of certificates.
+// http.Serverのイベント駆動でServeHTTPが呼ばれる
 func (app *App) Start() error {
 	// get a logger compatible with http.Server
 	serverLogger, err := zap.NewStdLogAt(app.logger.Named("stdlib"), zap.DebugLevel)
@@ -526,6 +527,7 @@ func (app *App) Start() error {
 			_, h2cok := protocolsUnique["h2c"]
 			_, h3ok := protocolsUnique["h3"]
 
+			// Caddy実行時に指定されたポートのレンジ分リスナーを起動する
 			for portOffset := uint(0); portOffset < listenAddr.PortRangeSize(); portOffset++ {
 				hostport := listenAddr.JoinHostPort(portOffset)
 
@@ -593,6 +595,8 @@ func (app *App) Start() error {
 					srv.listeners = append(srv.listeners, ln)
 
 					//nolint:errcheck
+					// ここのhttp.server.Serveで常時リクエストを待機して、受信イベントに応じてServeHTTPを呼び出す
+					// さらに、内部でnet/httpのAcceptループを開始して、以降はリクエスト到着のたびにserver.goのServeHTTPを実行する
 					go srv.server.Serve(ln)
 				}
 
