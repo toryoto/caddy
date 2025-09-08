@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メロンパン工房 - 香ばしい毎日をお届け</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            overflow-x: hidden;
+        }
+
+        /* ヘッダー */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6b35;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: #f6ad55;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2d3748;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b35;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff6b35;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1.5" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b35, #f093fb);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.5s forwards;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+        }
+
+        /* フローティング要素 */
+        .floating-element {
+            position: absolute;
+            opacity: 0.7;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            font-size: 2rem;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 1s;
+            font-size: 1.5rem;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 2s;
+            font-size: 1.8rem;
+        }
+
+        /* 商品セクション */
+        .products {
+            padding: 5rem 0;
+            background: #f7fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2d3748;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b35, #f093fb);
+            border-radius: 2px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ff6b35;
+        }
+
+        .product-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .product-card p {
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        /* 店舗情報 */
+        .info {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .info-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .info-icon {
+            font-size: 3rem;
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        /* フッター */
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .social-links {
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ff6b35;
+        }
+
+        /* アニメーション */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-bread-slice"></i>
+                メロンパン工房
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">ホーム</a></li>
+                <li><a href="#products">商品</a></li>
+                <li><a href="#info">店舗情報</a></li>
+                <li><a href="#contact">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="floating-element">🍞</div>
+        <div class="floating-element">✨</div>
+        <div class="floating-element">🥖</div>
+        
+        <div class="hero-content">
+            <h1>香ばしい幸せを、毎日お届け</h1>
+            <p>手作りの温もりと、モダンな味わいが織りなすメロンパン</p>
+            <a href="#products" class="cta-button">商品を見る</a>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">人気の商品</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">🍈</div>
+                    <h3>クラシックメロンパン</h3>
+                    <p>伝統的な製法で作られた、サクサク食感の定番メロンパン</p>
+                    <div class="price">¥180</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">🍓</div>
+                    <h3>プレミアムメロンパン</h3>
+                    <p>厳選された素材を使用した、贅沢な味わいのメロンパン</p>
+                    <div class="price">¥280</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">🍫</div>
+                    <h3>チョコメロンパン</h3>
+                    <p>濃厚なチョコレートが織りなす、新しいメロンパンの形</p>
+                    <div class="price">¥220</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="info" id="info">
+        <div class="container">
+            <h2 class="section-title">店舗情報</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📍</div>
+                    <h3>所在地</h3>
+                    <p>〒150-0001<br>東京都渋谷区神宮前1-1-1<br>メロンパンビル1F</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🕒</div>
+                    <h3>営業時間</h3>
+                    <p>平日: 7:00 - 19:00<br>土日祝: 8:00 - 18:00<br>定休日: 第2・4火曜日</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">📞</div>
+                    <h3>お問い合わせ</h3>
+                    <p>TEL: 03-1234-5678<br>Email: info@melonpan.com<br>LINE: @melonpan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-line"></i></a>
+            </div>
+            <p>&copy; 2025 メロンパン工房. All rights reserved.</p>
+            <p>毎日焼きたて、愛情込めてお届けします</p>
+        </div>
+    </footer>
+
+    <script>
+        // スムーススクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ヘッダーの背景変更
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // 商品カードのホバーエフェクト
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // パララックス効果
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero');
+            const speed = scrolled * 0.5;
+            if (parallax) {
+                parallax.style.transform = 'translateY(' + speed + 'px)';
+            }
+        });
+
+        // フローティング要素のランダムアニメーション
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach((element, index) => {
+            const randomDelay = Math.random() * 2;
+            const randomDuration = 3 + Math.random() * 2;
+            element.style.animationDelay = randomDelay + 's';
+            element.style.animationDuration = randomDuration + 's';
+        });
+    </script>
+</body>
+</html>
